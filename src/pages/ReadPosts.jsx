@@ -1,12 +1,27 @@
 import { useState, useEffect } from 'react'
+import { supabase } from '../client'
 import Card from '../components/Card'
-
+// Step 5 done
 const ReadPosts = (props) => {
 
     const [posts, setPosts] = useState([])
-
     useEffect(() => {
-        setPosts(props.data)
+        const fetchPosts = async () => {
+            const { data, error } = await supabase
+            .from('Posts')
+            .select()
+            .order('created_at', { ascending: true })
+
+            if (error) {
+                console.error('Error fetching posts:', error)
+                return
+            }
+
+            // set state of posts
+            setPosts(data)            
+        }
+
+        fetchPosts()
     }, [props])
     
     return (
